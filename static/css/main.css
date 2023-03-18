@@ -5,27 +5,87 @@ body {
 
 p {
     color: white;
-    font-family: Shanti;
+    font-family: Helvetica;
     font-size: 1.2em;
     margin: 20px;
 }
 
-img {
-    margin: 60px, 0, 30px, 0;
+label{
+    color: white;
 }
 
-input{
-    width: 300px;
+.container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image{
+    flex-basis: 7%;
+    margin: 0 0 0 0;
+}
+
+.text{
+    padding-left: 10px;
+    font-family: Helvetica;
+    color :white;
+    
+}
+
+p.header{
+    font-size: 50px;
+}
+
+img.logo {
+    max-width: 40%;
+    max-height: 40%;
+    margin: 0 0 0 0;
+}
+
+.flex-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.flex-container > div {
+    height: 70px;
+    align-items: center;
+  }
+
+input {
+    width: 130px;
     height: 50px;
-    margin: 20px;
+    margin: 10px;
     border: none;
     border-radius: 10px;
-    font-family: Shanti;
+    font-family: Helvetica;
     text-align: center;
     font-size: 1.3em;
 }
 
-input:focus {
+#colorpicker
+{
+    width: 50px;
+    height: 50px;
+    border-radius: 0px;
+    margin-top: 10px;
+    
+}
+
+#cmd_input{
+    width: 300px;
+    height: 50px;
+    margin: 10px;
+    border: none;
+    border-radius: 10px;
+    font-family: Helvetica;
+    text-align: center;
+    font-size: 1.3em;
+}
+
+#cmd_input:focus {
     border: solid 5px #00ffce;
     outline: none;
 }

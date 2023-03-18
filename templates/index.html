@@ -2,18 +2,52 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>GB UART WEBAPP</title>
+        <title>Sunrise Alarm Clock</title>
         <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}">
     </head>
     <body>
-        <img src="{{url_for('static', filename='gbuilds_logo.png')}}">
+        <div class="container">
+            <div class="image">
+                <img src="{{url_for('static', filename='gbuilds_logo.png')}}">
+            </div>
+            <div class="text">
+                <p class="header">Sunrise Alarm Clock</p>
+                <p class="subheader">by Greg's Builds</p>
+            </div>
+        </div>
+        <br>
+        <div class="flex-container">
+            <div>
+                <form action="rainbow" method="post">
+                    <input type="submit" value="rainbow" id="rainbow">
+                </form> 
+            </div>
+            <div>
+                <form action="moonlight" method="post">
+                    <input type="submit" value="moonlight" id="moonlight">
+                </form> 
+            </div>
+            <div>
+                <form action="off" method="post">
+                    <input type="submit" value="off" id="off">
+                </form> 
+            </div>
+        </div>
+
+        <form action="colour" method="post">
+            <label for="colorpicker">Pick a colour:</label>
+            <input type="color" name="color_input" id="colorpicker" value="0000ff">
+            <br>
+            <input type="submit" value="Set Colour" id="colour">
+            
+        </form> 
         <br>
         <form action="send" method="post">
             {% for message in get_flashed_messages()%}
                 <p>{{message}}</p>
             {% endfor %}
             <br>
-            <input type="text" name="name_input">
+            <input type="text" name="name_input" id = "cmd_input">
             <br>
             <input type="submit" value="SEND" id="send">
         </form>
