@@ -14,6 +14,27 @@ label{
     color: white;
 }
 
+.slider{
+    -webkit-appearance: none;
+    appearance: none;
+    width: 150px;
+    height: 25px;
+    border-radius: 15px; 
+    background: #d3d3d3;
+}
+
+.slider::-webkit-slider-thumb{
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    width: 25px; /* Set a specific slider handle width */
+    height: 25px; /* Slider handle height */
+    border-radius: 50%; 
+    background: aqua;
+}
+.slider::-moz-range-thumb{
+    background: aqua;
+}
+
 .container{
     display: flex;
     align-items: center;

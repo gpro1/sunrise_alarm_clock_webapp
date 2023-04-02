@@ -37,11 +37,23 @@
         <form action="colour" method="post">
             <label for="colorpicker">Pick a colour:</label>
             <input type="color" name="color_input" id="colorpicker" value="0000ff">
+            <label for="brightness">Select brightness:</label>
+            <input type="range" min="1" max="100" value="100" class="slider" name="brightness_input" id="brightness">
             <br>
             <input type="submit" value="Set Colour" id="colour">
             
         </form> 
-        <br>
+        <hr>
+        <p>Alarm is set to: {{ alarm_time }}</p>
+        <form action = "setAlarm" method="post">
+            <label for="alarmTime">Select an Alarm time:</label>
+            <input type="time" id="alarmTime", value="12:00" name="alarmTime">     
+            <input type="submit" value = "Set alarm" id = "setAlarmButton">
+        </form>
+        <form action = "disableAlarm" method="post">
+            <input type="submit" value = "Disable alarm" id = "disableAlarmButton">
+        </form>
+        <hr>
         <form action="send" method="post">
             {% for message in get_flashed_messages()%}
                 <p>{{message}}</p>
