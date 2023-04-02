@@ -3,14 +3,16 @@ import datetime
 import serial
 import sys
 
-alarm_time = str(argv[1])
+ser = serial.Serial('/dev/serial0')
+
+alarm_time = str(sys.argv[1])
 alarm_time = alarm_time.split(':')
-alarm_hour = int(alarm_time[1])
-alarm_min = int(alarm_time[2])
+alarm_hour = int(alarm_time[0])
+alarm_min = int(alarm_time[1])
 
 while(True):
     t = datetime.datetime.today()
-    future = datetime.datetime(t.year, t.month, t.day, alarm_hour, alarm_minute)
+    future = datetime.datetime(t.year, t.month, t.day, alarm_hour, alarm_min)
     future -= datetime.timedelta(minutes=30)
     if t.timestamp() > future.timestamp():
         future += datetime.timedelta(days=1)

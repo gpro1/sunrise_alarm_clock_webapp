@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, flash
 import serial
 import subprocess
-ser = serial.Serial('COM3')
+import time
+ser = serial.Serial('/dev/serial0')
 
 app = Flask(__name__)
 app.secret_key = "peepeepoopoo"
@@ -11,7 +12,7 @@ current_alarm_time = None
 
 def set_alarm(alarm_time):
     global alarm_process
-    alarm_process = subprocess.Popen([python, sunrise_alarm.py, alarm_time])
+    alarm_process = subprocess.Popen(["python", "sunrise_alarm.py", alarm_time])
 
 @app.route('/')
 def index():
@@ -71,13 +72,12 @@ def setAlarm():
     #get alarm arguments
     current_alarm_time = str(request.form['alarmTime'])
 
-    while alarm_process is not None:
-        alarm_process.kill()
-        while not process.poll():
-            time.sleep(0.1)
-        del process
 
-    #set_alarm(time)
+    if alarm_process is not None:
+        alarm_process.kill()
+        alarm_process.wait(timeout=0.5)
+
+    set_alarm(current_alarm_time)
 
     #render template
     flash("Enter a command:")
@@ -91,12 +91,15 @@ def disableAlarm():
 
     current_alarm_time = "not set!"
 
-    while alarm_process is not None:
+    if alarm_process is not None:
         alarm_process.kill()
-        while not process.poll():
-            time.sleep(0.1)
-        del process
+        alarm_process.wait(timeout=0.5)
 
+#    while alarm_process is not None:
+#        alarm_process.kill()
+#        while not alarm_process.poll():
+#            time.sleep(0.1)
+      
     flash("Enter a command:")
     return render_template("index.html", alarm_time=current_alarm_time)
 
