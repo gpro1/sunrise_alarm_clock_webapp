@@ -19,17 +19,17 @@
         <div class="flex-container">
             <div>
                 <form action="rainbow" method="post">
-                    <input type="submit" value="rainbow" id="rainbow">
+                    <input type="submit" value="Rainbow" id="rainbow">
                 </form> 
             </div>
             <div>
                 <form action="moonlight" method="post">
-                    <input type="submit" value="moonlight" id="moonlight">
+                    <input type="submit" value="Moonlight" id="moonlight">
                 </form> 
             </div>
             <div>
                 <form action="off" method="post">
-                    <input type="submit" value="off" id="off">
+                    <input type="submit" value="Off" id="off">
                 </form> 
             </div>
         </div>
@@ -46,12 +46,12 @@
         <hr>
         <p>Alarm is set to: {{ alarm_time }}</p>
         <form action = "setAlarm" method="post">
-            <label for="alarmTime">Select an Alarm time:</label>
+            <label for="alarmTime">Select an alarm time:</label>
             <input type="time" id="alarmTime", value="12:00" name="alarmTime">     
-            <input type="submit" value = "Set alarm" id = "setAlarmButton">
+            <input type="submit" value = "Set Alarm" id = "setAlarmButton">
         </form>
         <form action = "disableAlarm" method="post">
-            <input type="submit" value = "Disable alarm" id = "disableAlarmButton">
+            <input type="submit" value = "Disable Alarm" id = "disableAlarmButton">
         </form>
         <hr>
         <form action="send" method="post">
@@ -61,7 +61,7 @@
             <br>
             <input type="text" name="name_input" id = "cmd_input">
             <br>
-            <input type="submit" value="SEND" id="send">
+            <input type="submit" value="Send" id="send">
         </form>
     </body>
 </html>
