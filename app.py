@@ -26,10 +26,6 @@ def load_alarm_time():
         return None
     except KeyError:
         return None
-
-def save_alarm_pid(pid):
-    with open('alarm_time.json', 'w') as f:
-        json.dump({'alarm_pid': str(pid)}, f)
  
 def load_alarm_pid():
     try:
@@ -71,6 +67,21 @@ def disable_alarm():
     # Remove the alarm PID file or set it to None
     save_alarm_data(None, None)
     current_alarm_time = None
+
+previous_time = load_alarm_time()
+previous_pid = load_alarm_pid()
+#Restore alarm if there was one set
+if ((previous_pid is not None) and (previous_time is not None)):
+    set_alarm(previous_time)
+    current_alarm_time = previous_time
+    print("Restored previous alarm:")
+else:
+    disable_alarm()
+    current_alarm_time = None
+    print("Unable to restore previous alarm:")
+
+print(previous_pid)
+print(previous_time)
 
 @app.route('/')
 def index():
@@ -149,14 +160,6 @@ def disableAlarm():
     return render_template("index.html", alarm_time=current_alarm_time)
 
 if __name__ == '__main__':
-    pid = load_alarm_pid()
-    previous_time = load_alarm_time()
-    #Restore alarm if there was one set
-    if ((pid is not None) and (previous_time is not None)):
-        set_alarm(previous_time)
-        current_alarm_time = previous_time
-    else:
-        disable_alarm()
-        current_alarm_time = None
+
     app.run(host='0.0.0.0', port=5000)
     
