@@ -2,6 +2,9 @@ from flask import Flask, render_template, request, flash
 import serial
 import subprocess
 import time
+import os
+import signal
+import json
 ser = serial.Serial('/dev/serial0')
 
 app = Flask(__name__)
@@ -10,9 +13,62 @@ app.secret_key = "peepeepoopoo"
 alarm_process = None
 current_alarm_time = None
 
+def save_alarm_time(alarm_time):
+    with open('alarm_time.json', 'w') as f:
+        json.dump({'alarm_time': alarm_time}, f)
+ 
+def load_alarm_time():
+    try:
+        with open('alarm_time.json', 'r') as f:
+            data = json.load(f)
+            return data['alarm_time']
+    except FileNotFoundError:
+        return None
+
+def save_alarm_pid(pid):
+    with open('alarm_time.json', 'w') as f:
+        json.dump({'alarm_pid': str(pid)}, f)
+ 
+def load_alarm_pid():
+    try:
+        with open('alarm_time.json', 'r') as f:
+            data = json.load(f)
+            return data['alarm_pid']
+    except FileNotFoundError:
+        return None
+ 
+def is_pid_running(pid):
+    try:
+        os.kill(pid, 0)
+        return True
+    except OSError:
+        return False
+ 
 def set_alarm(alarm_time):
     global alarm_process
+    # Load the PID of the existing subprocess, if any
+    alarm_pid = load_alarm_pid()
+ 
+    # Check if the subprocess is still running
+    if alarm_pid is not None and is_pid_running(alarm_pid):
+        # Terminate the existing subprocess
+        os.kill(alarm_pid, signal.SIGTERM)
+ 
+    # Start a new subprocess
     alarm_process = subprocess.Popen(["python", "sunrise_alarm.py", alarm_time])
+    # Save the new subprocess PID
+    save_alarm_pid(alarm_process.pid)
+    save_alarm_time(alarm_time)
+ 
+def disable_alarm():
+    alarm_pid = load_alarm_pid()
+    if alarm_pid is not None and is_pid_running(alarm_pid):
+        os.kill(alarm_pid, signal.SIGTERM)
+
+    # Remove the alarm PID file or set it to None
+    save_alarm_pid(None)
+    save_alarm_time(None)
+    current_alarm_time = None
 
 @app.route('/')
 def index():
@@ -26,7 +82,6 @@ def send():
     ser.write(bytes(request.form['name_input'], 'utf-8') + b' \r\n')
     flash("Sent the following command: " + request.form['name_input'])
     return render_template("index.html", alarm_time=current_alarm_time)
-
 
 @app.route("/rainbow", methods=["post", "get"])
 def rainbow():
@@ -72,11 +127,6 @@ def setAlarm():
     #get alarm arguments
     current_alarm_time = str(request.form['alarmTime'])
 
-
-    if alarm_process is not None:
-        alarm_process.kill()
-        alarm_process.wait(timeout=0.5)
-
     set_alarm(current_alarm_time)
 
     #render template
@@ -91,18 +141,20 @@ def disableAlarm():
 
     current_alarm_time = "not set!"
 
-    if alarm_process is not None:
-        alarm_process.kill()
-        alarm_process.wait(timeout=0.5)
-
-#    while alarm_process is not None:
-#        alarm_process.kill()
-#        while not alarm_process.poll():
-#            time.sleep(0.1)
+    disable_alarm();
       
     flash("Enter a command:")
     return render_template("index.html", alarm_time=current_alarm_time)
 
 if __name__ == '__main__':
+    pid = load_alarm_pid()
+    previous_time = load_alarm_time()
+    #Restore alarm if there was one set
+    if ((pid is not None) and (previous_time is not None)):
+        set_alarm(previous_time)
+        current_alarm_time = previous_time
+    else:
+        disable_alarm()
+        current_alarm_time = None
     app.run(host='0.0.0.0', port=5000)
     
