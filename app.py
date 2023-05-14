@@ -13,9 +13,9 @@ app.secret_key = "peepeepoopoo"
 alarm_process = None
 current_alarm_time = None
 
-def save_alarm_time(alarm_time):
+def save_alarm_data(alarm_time, pid):
     with open('alarm_time.json', 'w') as f:
-        json.dump({'alarm_time': alarm_time}, f)
+        json.dump({'alarm_time': alarm_time, 'alarm_pid': pid}, f)
  
 def load_alarm_time():
     try:
@@ -23,6 +23,8 @@ def load_alarm_time():
             data = json.load(f)
             return data['alarm_time']
     except FileNotFoundError:
+        return None
+    except KeyError:
         return None
 
 def save_alarm_pid(pid):
@@ -35,6 +37,8 @@ def load_alarm_pid():
             data = json.load(f)
             return data['alarm_pid']
     except FileNotFoundError:
+        return None
+    except KeyError:
         return None
  
 def is_pid_running(pid):
@@ -57,8 +61,7 @@ def set_alarm(alarm_time):
     # Start a new subprocess
     alarm_process = subprocess.Popen(["python", "sunrise_alarm.py", alarm_time])
     # Save the new subprocess PID
-    save_alarm_pid(alarm_process.pid)
-    save_alarm_time(alarm_time)
+    save_alarm_data(alarm_time, alarm_process.pid)
  
 def disable_alarm():
     alarm_pid = load_alarm_pid()
@@ -66,8 +69,7 @@ def disable_alarm():
         os.kill(alarm_pid, signal.SIGTERM)
 
     # Remove the alarm PID file or set it to None
-    save_alarm_pid(None)
-    save_alarm_time(None)
+    save_alarm_data(None, None)
     current_alarm_time = None
 
 @app.route('/')
